@@ -52,7 +52,7 @@ namespace Catalog.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status201Created)]
         public async Task<ActionResult<Product>> CreateProduct([FromBody] Product product)
         {
             await Repository.CreateProduct(product);
@@ -60,17 +60,19 @@ namespace Catalog.API.Controllers
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateProduct([FromBody] Product product)
         {
-            return Ok(await Repository.UpdateProduct(product));
+            await Repository.UpdateProduct(product);
+            return NoContent();
         }
 
         [HttpDelete("{id:length(24)}", Name = "DeleteProduct")]
-        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteByProductId(string id)
         {
-            return Ok(await Repository.DeleteProduct(id));
+            await Repository.DeleteProduct(id);
+            return NoContent();
         }
 
     }
