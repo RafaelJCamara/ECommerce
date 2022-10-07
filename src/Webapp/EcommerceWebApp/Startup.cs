@@ -1,4 +1,4 @@
-using EcommerceWebApp.HttpHandler;
+﻿using EcommerceWebApp.HttpHandler;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +11,9 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using EcommerceWebApp.Data;
+using EcommerceWebApp.ApiServices.Catalog;
 
 namespace EcommerceWebApp
 {
@@ -26,6 +29,17 @@ namespace EcommerceWebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddScoped<ICatalogService,CatalogService>();
+
+            services.AddTransient<AuthenticationDelegatingHandler>();
+
+            services.AddHttpClient("APIGatewayClientNoAuth", client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:5010/");
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+            });
 
             services.AddHttpClient("APIGatewayClient", client =>
             {
@@ -68,7 +82,6 @@ namespace EcommerceWebApp
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
             });
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

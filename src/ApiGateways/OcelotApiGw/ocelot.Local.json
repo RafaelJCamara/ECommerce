@@ -7,8 +7,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          //"Port": "8000"
-          "Port": "5000"
+          "Port": "8000"
         }
       ],
       "UpstreamPathTemplate": "/Catalog",
@@ -17,12 +16,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/v1/Catalog/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          //"Port": "8000"
-          "Port": "5000"
+          "Port": "8000"
         }
       ],
       "UpstreamPathTemplate": "/Catalog/{id}",
@@ -30,12 +28,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/v1/Catalog/GetProductByCategory/{category}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          //"Port": "8000"
-          "Port": "5000"
+          "Port": "8000"
         }
       ],
       "UpstreamPathTemplate": "/Catalog/GetProductByCategory/{category}",
@@ -48,8 +45,8 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          //"Port": "8001"
-          "Port": "5010"
+          "Port": "8001"
+          //"Port": "5010"
         }
       ],
       "UpstreamPathTemplate": "/Basket/{userName}",
@@ -61,8 +58,8 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          //"Port": "8001"
-          "Port": "5010"
+          "Port": "8001"
+          //"Port": "5010"
         }
       ],
       "UpstreamPathTemplate": "/Basket",
@@ -74,8 +71,8 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          //"Port": "8001"
-          "Port": "5010"
+          "Port": "8001"
+          //"Port": "5010"
         }
       ],
       "UpstreamPathTemplate": "/Basket/Checkout",
