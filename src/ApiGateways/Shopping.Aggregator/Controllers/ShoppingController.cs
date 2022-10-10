@@ -1,61 +1,59 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Shopping.Aggregator.Models;
 using Shopping.Aggregator.Services;
-using System.Net;
-using System.Threading.Tasks;
 
-namespace Shopping.Aggregator.Controllers
+namespace Shopping.Aggregator.Controllers;
+
+[ApiController]
+[Route("api/v1/[controller]")]
+public class ShoppingController : ControllerBase
 {
-    [ApiController]
-    [Route("api/v1/[controller]")]
-    public class ShoppingController : ControllerBase
+    private readonly IBasketService _basketService;
+    private readonly ICatalogService _catalogService;
+    private readonly IOrderService _orderService;
+
+    public ShoppingController(ICatalogService catalogService, IBasketService basketService, IOrderService orderService)
     {
-        private readonly ICatalogService _catalogService;
-        private readonly IBasketService _basketService;
-        private readonly IOrderService _orderService;
+        _catalogService = catalogService;
+        _basketService = basketService;
+        _orderService = orderService;
+    }
 
-        public ShoppingController(ICatalogService catalogService, IBasketService basketService, IOrderService orderService)
+    [HttpGet("{userName}", Name = "GetShopping")]
+    [ProducesResponseType(typeof(ShoppingModel), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<ShoppingModel>> GetShopping(string userName)
+    {
+        // get basket with username
+        // iterate basket items and consume products with basket item productId member
+        // map product related members into basketitem dto with extended columns
+        // consume ordering microservices in order to retrieve order list
+        // return root ShoppngModel dto class which including all responses
+
+        var basket = await _basketService.GetBasket(userName);
+
+        foreach (var item in basket.Items)
         {
-            _catalogService = catalogService;
-            _basketService = basketService;
-            _orderService = orderService;
+            var product = await _catalogService.GetProductById(item.ProductId);
+
+            // set additional product fields onto basket item
+            item.ProductName = product.Name;
+            item.Category = product.Category;
+            item.Summary = product.Summary;
+            item.Description = product.Description;
+            item.ImageFile = product.ImageFile;
         }
 
-        [HttpGet("{userName}", Name = "GetShopping")]
-        [ProducesResponseType(typeof(ShoppingModel), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<ShoppingModel>> GetShopping(string userName)
+        var orders = await _orderService.GetOrdersByUserName(userName);
+
+        var shoppingModel = new ShoppingModel
         {
-            // get basket with username
-            // iterate basket items and consume products with basket item productId member
-            // map product related members into basketitem dto with extended columns
-            // consume ordering microservices in order to retrieve order list
-            // return root ShoppngModel dto class which including all responses
+            UserName = userName,
+            BasketWithProducts = basket,
+            Orders = orders
+        };
 
-            var basket = await _basketService.GetBasket(userName);
-
-            foreach (var item in basket.Items)
-            {
-                var product = await _catalogService.GetProductById(item.ProductId);
-
-                // set additional product fields onto basket item
-                item.ProductName = product.Name;
-                item.Category = product.Category;
-                item.Summary = product.Summary;
-                item.Description = product.Description;
-                item.ImageFile = product.ImageFile;
-            }
-
-            var orders = await _orderService.GetOrdersByUserName(userName);
-
-            var shoppingModel = new ShoppingModel
-            {
-                UserName = userName,
-                BasketWithProducts = basket,
-                Orders = orders
-            };
-
-            return Ok(shoppingModel);
-        }
-
+        return Ok(shoppingModel);
     }
 }

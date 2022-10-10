@@ -1,11 +1,10 @@
-﻿using Shopping.Aggregator.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Shopping.Aggregator.Models;
 
-namespace Shopping.Aggregator.Services
+namespace Shopping.Aggregator.Services;
+
+public interface IOrderService
 {
-    public interface IOrderService
-    {
-        Task<IEnumerable<OrderResponseModel>> GetOrdersByUserName(string username);
-    }
+    Task<IEnumerable<OrderResponseModel>> GetOrdersByUserName(string username);
 }

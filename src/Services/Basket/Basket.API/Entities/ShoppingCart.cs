@@ -1,32 +1,29 @@
 ﻿using System.Collections.Generic;
 
-namespace Basket.API.Entities
+namespace Basket.API.Entities;
+
+public class ShoppingCart
 {
-    public class ShoppingCart
+    public ShoppingCart()
     {
-        public string UserName { get; set; }
+    }
 
-        public List<ShoppingCartItem> Items { get; set; } = new List<ShoppingCartItem>();
+    public ShoppingCart(string userName)
+    {
+        UserName = userName;
+    }
 
-        public decimal TotalPrice
+    public string UserName { get; set; }
+
+    public List<ShoppingCartItem> Items { get; set; } = new();
+
+    public decimal TotalPrice
+    {
+        get
         {
-            get 
-            { 
-                decimal totalPrice = 0;
-                foreach(var cartItem in Items) totalPrice += cartItem.Price * cartItem.Quantity;
-                return totalPrice;
-            }
+            decimal totalPrice = 0;
+            foreach (var cartItem in Items) totalPrice += cartItem.Price * cartItem.Quantity;
+            return totalPrice;
         }
-
-        public ShoppingCart()
-        {
-        
-        }
-
-        public ShoppingCart(string userName)
-        {
-            UserName = userName;
-        }
-
     }
 }
