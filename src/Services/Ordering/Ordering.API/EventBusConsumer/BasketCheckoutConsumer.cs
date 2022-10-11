@@ -1,18 +1,17 @@
-﻿using AutoMapper;
+﻿using System.Threading.Tasks;
+using AutoMapper;
 using EventBus.Messages.Events;
 using MassTransit;
 using MediatR;
 using Ordering.Application.Features.Orders.Commands.CheckoutOrder;
-using System;
-using System.Threading.Tasks;
 
 namespace Ordering.API.EventBusConsumer
 {
     public class BasketCheckoutConsumer : IConsumer<BasketCheckoutEvent>
     {
+        private readonly IMapper _mapper;
 
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
 
         public BasketCheckoutConsumer(IMediator mediator, IMapper mapper)
         {

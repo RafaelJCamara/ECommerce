@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Shopping.Aggregator.Models;
 using Shopping.Aggregator.Services;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace Shopping.Aggregator.Controllers
 {
@@ -10,11 +10,12 @@ namespace Shopping.Aggregator.Controllers
     [Route("api/v1/[controller]")]
     public class ShoppingController : ControllerBase
     {
-        private readonly ICatalogService _catalogService;
         private readonly IBasketService _basketService;
+        private readonly ICatalogService _catalogService;
         private readonly IOrderService _orderService;
 
-        public ShoppingController(ICatalogService catalogService, IBasketService basketService, IOrderService orderService)
+        public ShoppingController(ICatalogService catalogService, IBasketService basketService,
+            IOrderService orderService)
         {
             _catalogService = catalogService;
             _basketService = basketService;
@@ -56,6 +57,5 @@ namespace Shopping.Aggregator.Controllers
 
             return Ok(shoppingModel);
         }
-
     }
 }

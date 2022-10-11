@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,7 +11,7 @@ namespace Discount.API.Extensions
     {
         public static IHost MigrateDatabase<TContext>(this IHost host, int? retry = 0)
         {
-            int retryForAvailability = retry.Value;
+            var retryForAvailability = retry.Value;
 
             using (var scope = host.Services.CreateScope())
             {
@@ -41,10 +41,12 @@ namespace Discount.API.Extensions
                                                                 Amount INT)";
                     command.ExecuteNonQuery();
 
-                    command.CommandText = "INSERT INTO Coupon(ProductName, Description, Amount) VALUES('IPhone X', 'IPhone Discount', 150);";
+                    command.CommandText =
+                        "INSERT INTO Coupon(ProductName, Description, Amount) VALUES('IPhone X', 'IPhone Discount', 150);";
                     command.ExecuteNonQuery();
 
-                    command.CommandText = "INSERT INTO Coupon(ProductName, Description, Amount) VALUES('Samsung 10', 'Samsung Discount', 100);";
+                    command.CommandText =
+                        "INSERT INTO Coupon(ProductName, Description, Amount) VALUES('Samsung 10', 'Samsung Discount', 100);";
                     command.ExecuteNonQuery();
 
                     logger.LogInformation("Migrated postresql database.");
@@ -56,7 +58,7 @@ namespace Discount.API.Extensions
                     if (retryForAvailability < 50)
                     {
                         retryForAvailability++;
-                        System.Threading.Thread.Sleep(2000);
+                        Thread.Sleep(2000);
                         MigrateDatabase<TContext>(host, retryForAvailability);
                     }
                 }

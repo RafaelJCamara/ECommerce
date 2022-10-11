@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Catalog.API.Entities;
 using Catalog.API.Repositories;
@@ -13,14 +12,14 @@ namespace Catalog.API.Controllers
     [Route("api/v1/[controller]")]
     public class CatalogController : ControllerBase
     {
-        private IProductRepository Repository { get; }
-        private ILogger<CatalogController> Logger { get; }
-
         public CatalogController(IProductRepository repository, ILogger<CatalogController> logger)
         {
             Repository = repository;
             Logger = logger;
         }
+
+        private IProductRepository Repository { get; }
+        private ILogger<CatalogController> Logger { get; }
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
@@ -40,6 +39,7 @@ namespace Catalog.API.Controllers
                 Logger.LogError($"Product with id {id} not found!");
                 return NotFound();
             }
+
             return Ok(foundProduct);
         }
 
@@ -56,7 +56,7 @@ namespace Catalog.API.Controllers
         public async Task<ActionResult<Product>> CreateProduct([FromBody] Product product)
         {
             await Repository.CreateProduct(product);
-            return CreatedAtRoute("GetProduct", new { id = product.Id}, product);
+            return CreatedAtRoute("GetProduct", new { id = product.Id }, product);
         }
 
         [HttpPut]
@@ -74,7 +74,5 @@ namespace Catalog.API.Controllers
             await Repository.DeleteProduct(id);
             return NoContent();
         }
-
     }
 }
-
