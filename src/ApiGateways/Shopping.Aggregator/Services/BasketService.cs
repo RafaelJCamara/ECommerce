@@ -1,13 +1,12 @@
-﻿using Shopping.Aggregator.Extensions;
-using Shopping.Aggregator.Models;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
+using Shopping.Aggregator.Extensions;
+using Shopping.Aggregator.Models;
 
 namespace Shopping.Aggregator.Services
 {
     public class BasketService : IBasketService
     {
-
         private readonly HttpClient _client;
 
         public BasketService(HttpClient client)

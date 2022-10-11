@@ -18,7 +18,6 @@ namespace Ordering.Infrastructure.Persistence
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             foreach (var entry in ChangeTracker.Entries<EntityBase>())
-            {
                 switch (entry.State)
                 {
                     case EntityState.Added:
@@ -30,11 +29,8 @@ namespace Ordering.Infrastructure.Persistence
                         entry.Entity.LastModifiedBy = "swn";
                         break;
                 }
-            }
 
             return base.SaveChangesAsync(cancellationToken);
         }
-
     }
 }
-

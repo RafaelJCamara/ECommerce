@@ -1,3 +1,4 @@
+using System;
 using Basket.API.GrpcServices;
 using Basket.API.Repositories;
 using Discount.Grpc.Protos;
@@ -8,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System;
 
 namespace Basket.API
 {
@@ -37,10 +37,9 @@ namespace Basket.API
                     options => options.Address = new Uri(Configuration.GetValue<string>("GrpcSettings:DiscountUrl"))
                 );
             services.AddScoped<DiscountGrpcService>();
-            services.AddMassTransit(config => {
-                config.UsingRabbitMq((ctx, cfg) => {
-                    cfg.Host(Configuration["EventBusSettings:HostAddress"]);
-                });
+            services.AddMassTransit(config =>
+            {
+                config.UsingRabbitMq((ctx, cfg) => { cfg.Host(Configuration["EventBusSettings:HostAddress"]); });
             });
             services.AddMassTransitHostedService();
             services.AddSwaggerGen(c =>
@@ -63,10 +62,7 @@ namespace Basket.API
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }
