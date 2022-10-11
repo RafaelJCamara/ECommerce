@@ -4,23 +4,8 @@ namespace Basket.API.Entities
 {
     public class ShoppingCart
     {
-        public string UserName { get; set; }
-
-        public List<ShoppingCartItem> Items { get; set; } = new List<ShoppingCartItem>();
-
-        public decimal TotalPrice
-        {
-            get 
-            { 
-                decimal totalPrice = 0;
-                foreach(var cartItem in Items) totalPrice += cartItem.Price * cartItem.Quantity;
-                return totalPrice;
-            }
-        }
-
         public ShoppingCart()
         {
-        
         }
 
         public ShoppingCart(string userName)
@@ -28,5 +13,18 @@ namespace Basket.API.Entities
             UserName = userName;
         }
 
+        public string UserName { get; set; }
+
+        public List<ShoppingCartItem> Items { get; set; } = new();
+
+        public decimal TotalPrice
+        {
+            get
+            {
+                decimal totalPrice = 0;
+                foreach (var cartItem in Items) totalPrice += cartItem.Price * cartItem.Quantity;
+                return totalPrice;
+            }
+        }
     }
 }

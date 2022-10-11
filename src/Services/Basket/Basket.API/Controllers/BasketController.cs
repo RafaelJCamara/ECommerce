@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Threading.Tasks;
+using AutoMapper;
 using Basket.API.Entities;
 using Basket.API.GrpcServices;
 using Basket.API.Repositories;
@@ -7,7 +8,6 @@ using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace Basket.API.Controllers
 {
@@ -16,12 +16,13 @@ namespace Basket.API.Controllers
     public class BasketController : ControllerBase
     {
         private readonly IBasketRepository _basketRepository;
-        private readonly ILogger<BasketController> _logger;
         private readonly DiscountGrpcService _discountService;
+        private readonly ILogger<BasketController> _logger;
         private readonly IMapper _mapper;
         private readonly IPublishEndpoint _publishEndpoint;
 
-        public BasketController(IBasketRepository basketRepository, ILogger<BasketController> logger, DiscountGrpcService discountService, IMapper mapper, IPublishEndpoint publishEndpoint)
+        public BasketController(IBasketRepository basketRepository, ILogger<BasketController> logger,
+            DiscountGrpcService discountService, IMapper mapper, IPublishEndpoint publishEndpoint)
         {
             _basketRepository = basketRepository;
             _logger = logger;
@@ -41,6 +42,7 @@ namespace Basket.API.Controllers
                 _logger.LogError($"Basket with username {username} not found!");
                 return NotFound($"Basket with username {username} not found!");
             }
+
             return Ok(basket);
         }
 
@@ -53,6 +55,7 @@ namespace Basket.API.Controllers
                 var coupon = await _discountService.GetDiscountAsync(item.ProductName);
                 item.Price -= coupon.Amount;
             }
+
             return Ok(await _basketRepository.UpdateBasket(basket));
         }
 
@@ -75,6 +78,5 @@ namespace Basket.API.Controllers
             await _basketRepository.DeleteBasket(basketCheckout.UserName);
             return Accepted();
         }
-
     }
 }

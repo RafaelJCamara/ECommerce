@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +13,6 @@ namespace Ordering.API.Controllers
     [Route("api/v1/[controller]")]
     public class OrderController : ControllerBase
     {
-
         private readonly IMediator _mediator;
 
         public OrderController(IMediator mediator)
@@ -44,14 +42,12 @@ namespace Ordering.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}",Name ="DeleteOrder")]
+        [HttpDelete("{id}", Name = "DeleteOrder")]
         public async Task<IActionResult> DeleteOrder(int orderId)
         {
             var deleteCommand = new DeleteOrderCommand { Id = orderId };
             await _mediator.Send(deleteCommand);
             return NoContent();
         }
-
     }
 }
-

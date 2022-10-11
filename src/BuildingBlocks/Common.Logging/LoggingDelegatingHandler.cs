@@ -1,9 +1,9 @@
-using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Common.Logging
 {
@@ -16,7 +16,8 @@ namespace Common.Logging
             this.logger = logger;
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken)
         {
             try
             {
@@ -25,14 +26,10 @@ namespace Common.Logging
                 var response = await base.SendAsync(request, cancellationToken);
 
                 if (response.IsSuccessStatusCode)
-                {
                     logger.LogInformation("Received a success response from {Url}", response.RequestMessage.RequestUri);
-                }
                 else
-                {
                     logger.LogWarning("Received a non-success status code {StatusCode} from {Url}",
                         (int)response.StatusCode, response.RequestMessage.RequestUri);
-                }
 
                 return response;
             }

@@ -1,8 +1,8 @@
-﻿using Discount.API.Entities;
+﻿using System.Threading.Tasks;
+using Discount.API.Entities;
 using Discount.API.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Discount.API.Controllers
 {
@@ -10,7 +10,8 @@ namespace Discount.API.Controllers
     [Route("api/v1/[controller]")]
     public class DiscountController : ControllerBase
     {
-        private readonly IDiscountRepository _discountRepository; 
+        private readonly IDiscountRepository _discountRepository;
+
         public DiscountController(IDiscountRepository discountRepository)
         {
             _discountRepository = discountRepository;
@@ -44,6 +45,5 @@ namespace Discount.API.Controllers
         {
             return Ok(await _discountRepository.DeleteDiscount(productName));
         }
-
     }
 }

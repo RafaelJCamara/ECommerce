@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Ordering.Application.Contracts.Infrastructure;
@@ -10,14 +11,14 @@ namespace Ordering.Infrastructure.Email
 {
     public class EmailService : IEmailService
     {
-        public EmailSettings _emailSettings { get; }
-        public ILogger<EmailService> _logger { get; }
-
         public EmailService(IOptions<EmailSettings> emailSettings, ILogger<EmailService> logger)
         {
             _emailSettings = emailSettings.Value;
             _logger = logger;
         }
+
+        public EmailSettings _emailSettings { get; }
+        public ILogger<EmailService> _logger { get; }
 
         public async Task<bool> SendEmail(Application.Models.Email email)
         {
@@ -38,7 +39,7 @@ namespace Ordering.Infrastructure.Email
 
             _logger.LogInformation("Email sent.");
 
-            if (response.StatusCode == System.Net.HttpStatusCode.Accepted || response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (response.StatusCode == HttpStatusCode.Accepted || response.StatusCode == HttpStatusCode.OK)
                 return true;
 
             _logger.LogError("Email sending failed.");
@@ -46,4 +47,3 @@ namespace Ordering.Infrastructure.Email
         }
     }
 }
-

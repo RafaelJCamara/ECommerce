@@ -1,5 +1,5 @@
-﻿using Discount.Grpc.Protos;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Discount.Grpc.Protos;
 
 namespace Basket.API.GrpcServices
 {
@@ -16,6 +16,5 @@ namespace Basket.API.GrpcServices
         {
             return await _client.GetDiscountAsync(new GetDiscountRequest { ProductName = productName });
         }
-
     }
 }

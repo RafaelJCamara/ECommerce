@@ -21,4 +21,8 @@
     <ItemGroup>
         <None Remove="Repositories\"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\BuildingBlocks\Common.Logging\Common.Logging.csproj"/>
+    </ItemGroup>
 </Project>

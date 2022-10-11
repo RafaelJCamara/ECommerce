@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Catalog.API.Entities;
 
@@ -18,4 +16,3 @@ namespace Catalog.API.Repositories
         Task<bool> DeleteProduct(string id);
     }
 }
-

@@ -1,13 +1,9 @@
-﻿using MediatR;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using Ordering.Application.Contracts.Persistence;
 using Ordering.Application.Exceptions;
 using Ordering.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Ordering.Application.Features.Orders.Commands.DeleteOrder
 {
@@ -23,10 +19,7 @@ namespace Ordering.Application.Features.Orders.Commands.DeleteOrder
         public async Task<Unit> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
         {
             var storedOrder = await _orderRepository.GetByIdAsync(request.Id);
-            if (storedOrder == null)
-            {
-                throw new NotFoundException(nameof(Order), request.Id);
-            }
+            if (storedOrder == null) throw new NotFoundException(nameof(Order), request.Id);
             await _orderRepository.DeleteAsync(storedOrder);
             return Unit.Value;
         }
