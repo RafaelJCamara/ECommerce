@@ -24,7 +24,11 @@ namespace WebStatus
         {
             services.AddControllersWithViews();
             services
+                // this allows us to enable using the health check user interface to show the results
+                // in order to perform the health checks, we need to configure the health checks urls
+                // those urls are defined under the HealthChecks-UI configuration
                 .AddHealthChecksUI()
+                // this will enable storing the health check results in memory within the MVC app
                 .AddInMemoryStorage();
         }
 

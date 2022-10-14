@@ -20,6 +20,7 @@ namespace WebStatus.Controllers
 
         public IActionResult Index()
         {
+            // whenever we route at the main page, we want to re-route to the main monitoring page, located at the /healthchecks-ui route
             return Redirect("/healthchecks-ui");
         }
 

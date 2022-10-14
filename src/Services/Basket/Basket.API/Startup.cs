@@ -54,7 +54,9 @@ namespace Basket.API
             });
 
             services
+                //registers the possibility of performing health checks        
                 .AddHealthChecks()
+                //registers the health checks of the services our main service depends on (in this case Redis)
                 .AddRedis(
                         Configuration["CacheSettings:ConnectionString"],
                         "Basket Redis Health Check",
@@ -79,6 +81,8 @@ namespace Basket.API
             app.UseEndpoints(
                 endpoints => { 
                     endpoints.MapControllers();
+                    //creates a route to perform te health check
+                    // the addition of HealthCheckOptions is so that the result of /hc route is a json and not a simple text
                     endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
                     {
                         Predicate = _ => true,
