@@ -35,19 +35,25 @@ namespace Shopping.Aggregator
             services.AddHttpClient<ICatalogService, CatalogService>(c =>
                     c.BaseAddress = new Uri(Configuration["ApiSettings:CatalogUrl"]))
                 .AddHttpMessageHandler<LoggingDelegatingHandler>()
+                // specifies the retry policy
                 .AddPolicyHandler(GetRetryPolicy())
+                // specifies the circuit break policy
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddHttpClient<IBasketService, BasketService>(c =>
                     c.BaseAddress = new Uri(Configuration["ApiSettings:BasketUrl"]))
                 .AddHttpMessageHandler<LoggingDelegatingHandler>()
+                // specifies the retry policy
                 .AddPolicyHandler(GetRetryPolicy())
+                // specifies the circuit break policy
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddHttpClient<IOrderService, OrderService>(c =>
                     c.BaseAddress = new Uri(Configuration["ApiSettings:OrderingUrl"]))
                 .AddHttpMessageHandler<LoggingDelegatingHandler>()
+                // specifies the retry policy
                 .AddPolicyHandler(GetRetryPolicy())
+                // specifies the circuit break policy
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddControllers();
