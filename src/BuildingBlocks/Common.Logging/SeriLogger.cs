@@ -18,6 +18,7 @@ namespace Common.Logging
                     .Enrich.WithMachineName()
                     .WriteTo.Debug()
                     .WriteTo.Console()
+                    //this enables us to get our logs to be written to Elastic Search
                     .WriteTo.Elasticsearch(
                         new ElasticsearchSinkOptions(new Uri(elasticUri))
                         {
@@ -29,6 +30,7 @@ namespace Common.Logging
                         })
                     .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
                     .Enrich.WithProperty("Application", context.HostingEnvironment.ApplicationName)
+                    // we need this so we can read configurations
                     .ReadFrom.Configuration(context.Configuration);
             };
     }

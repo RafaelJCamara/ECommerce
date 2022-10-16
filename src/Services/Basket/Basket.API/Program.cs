@@ -15,6 +15,7 @@ namespace Basket.API
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
+                //enables us to use serilog    
                 .UseSerilog(SeriLogger.Configure)
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
         }
