@@ -15,6 +15,7 @@ namespace Shopping.Aggregator
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
+                //by using this, Serilog will catch logs produced by Microsoft's ILogger
                 .UseSerilog(SeriLogger.Configure)
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
         }
