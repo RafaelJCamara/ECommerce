@@ -58,5 +58,8 @@ namespace Ordering.API.Extensions
             context.Database.Migrate();
             seeder(context, services);
         }
+        
+        //pass: 7Lg#?q8P3E
+        
     }
 }
