@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -23,27 +24,21 @@ namespace Ordering.Infrastructure.Email
         public async Task<bool> SendEmail(Application.Models.Email email)
         {
             var client = new SendGridClient(_emailSettings.ApiKey);
-
-            var subject = email.Subject;
-            var to = new EmailAddress(email.To);
-            var emailBody = email.Body;
-
-            var from = new EmailAddress
+            var msg = new SendGridMessage()
             {
-                Email = _emailSettings.FromAddress,
-                Name = _emailSettings.FromName
+                From = new EmailAddress(_emailSettings.FromAddress, _emailSettings.FromName),
+                Subject = email.Subject,
+                PlainTextContent = email.Body
             };
+            msg.AddTo(new EmailAddress(email.To, email.FullName));
+            var response = await client.SendEmailAsync(msg);
 
-            var sendGridMessage = MailHelper.CreateSingleEmail(from, to, subject, emailBody, emailBody);
-            var response = await client.SendEmailAsync(sendGridMessage);
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning($"There was an error sending an email to: {email.To}. Reason: {response.StatusCode.ToString()}");
+            }
 
-            _logger.LogInformation("Email sent.");
-
-            if (response.StatusCode == HttpStatusCode.Accepted || response.StatusCode == HttpStatusCode.OK)
-                return true;
-
-            _logger.LogError("Email sending failed.");
-            return false;
+            return response.IsSuccessStatusCode;
         }
     }
 }

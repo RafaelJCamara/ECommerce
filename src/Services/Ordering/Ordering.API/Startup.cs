@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Ordering.API.EventBusConsumer;
+using Ordering.Application.Models;
 using Ordering.Application.Registers;
 using Ordering.Infrastructure.Persistence;
 using Ordering.Infrastructure.Registers;
@@ -54,6 +55,10 @@ namespace Ordering.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ordering.API", Version = "v1" });
             });
+
+            //configure email settings
+            services
+                .Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 
             services
                 .AddHealthChecks()
