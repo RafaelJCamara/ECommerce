@@ -32,7 +32,12 @@ namespace Ordering.Infrastructure.Email
             };
             msg.AddTo(new EmailAddress(email.To, email.FullName));
             var response = await client.SendEmailAsync(msg);
-            
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning($"There was an error sending an email to: {email.To}. Reason: {response.StatusCode.ToString()}");
+            }
+
             return response.IsSuccessStatusCode;
         }
     }
