@@ -18,6 +18,9 @@ using Shopping.Aggregator.Services;
 
 namespace Shopping.Aggregator
 {
+    /*
+        -> Startup class is responsible for the application's configuration.
+     */
     public class Startup
     {
         public Startup(IConfiguration configuration)
