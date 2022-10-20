@@ -14,12 +14,20 @@ namespace IdentityServer
             {
                    new Client
                    {
-                       ClientId = "backend_client",
+                       ClientId = "backendClient",
                        ClientName = "Backend Microservice App",
-                       AllowedGrantTypes = GrantTypes.Hybrid,
+                       AllowedGrantTypes = GrantTypes.ClientCredentials,
                        //proof key protection should be false to not allow further proofs of auth
                        RequirePkce = false,
                        AllowRememberConsent = false,
+                       RedirectUris = new List<string>()
+                       {
+                           "https://localhost:5002/signin-oidc"
+                       },
+                       PostLogoutRedirectUris = new List<string>()
+                       {
+                           "https://localhost:5002/signout-callback-oidc"
+                       },
                        ClientSecrets = new List<Secret>
                        {
                            new Secret("secret".Sha256())
@@ -32,7 +40,8 @@ namespace IdentityServer
                            IdentityServerConstants.StandardScopes.Email,
                            "basketAPI",
                            "roles"
-                       }
+                       },
+                       //AllowAccessTokensViaBrowser = true
                    }
             };
 
@@ -41,11 +50,6 @@ namespace IdentityServer
            {
                new ApiScope("basketAPI", "Basket API")
            };
-
-        public static IEnumerable<ApiResource> ApiResources =>
-          new ApiResource[]
-          {
-          };
 
         public static IEnumerable<IdentityResource> IdentityResources =>
           new IdentityResource[]
