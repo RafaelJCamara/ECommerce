@@ -40,6 +40,7 @@ namespace IdentityServer
                            IdentityServerConstants.StandardScopes.Email,
                            "basketAPI",
                            "discountAPI",
+                           "orderingAPI",
                            "roles"
                        },
                        //AllowAccessTokensViaBrowser = true
@@ -50,7 +51,8 @@ namespace IdentityServer
            new ApiScope[]
            {
                new ApiScope("basketAPI", "Basket API"),
-               new ApiScope("discountAPI", "Discount API")
+               new ApiScope("discountAPI", "Discount API"),
+               new ApiScope("orderingAPI", "Ordering API")
            };
 
         public static IEnumerable<IdentityResource> IdentityResources =>
