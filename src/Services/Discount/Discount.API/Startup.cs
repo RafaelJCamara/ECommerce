@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace Discount.API
@@ -36,6 +37,16 @@ namespace Discount.API
                         name: "Discount PostgreSQL Health Check",
                         failureStatus: HealthStatus.Degraded
                 );
+            services
+                .AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = "https://localhost:5169";
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,7 +59,12 @@ namespace Discount.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Discount.API v1"));
             }
 
+            app.UseHttpsRedirection();
+
             app.UseRouting();
+
+            //Without this Authentication middleware, we will still get 401 status codes
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

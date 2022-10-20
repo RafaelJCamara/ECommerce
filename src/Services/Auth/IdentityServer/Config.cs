@@ -20,14 +20,14 @@ namespace IdentityServer
                        //proof key protection should be false to not allow further proofs of auth
                        RequirePkce = false,
                        AllowRememberConsent = false,
-                       RedirectUris = new List<string>()
-                       {
-                           "https://localhost:5002/signin-oidc"
-                       },
-                       PostLogoutRedirectUris = new List<string>()
-                       {
-                           "https://localhost:5002/signout-callback-oidc"
-                       },
+                       //RedirectUris = new List<string>()
+                       //{
+                       //    "https://localhost:5002/signin-oidc"
+                       //},
+                       //PostLogoutRedirectUris = new List<string>()
+                       //{
+                       //    "https://localhost:5002/signout-callback-oidc"
+                       //},
                        ClientSecrets = new List<Secret>
                        {
                            new Secret("secret".Sha256())
@@ -39,6 +39,7 @@ namespace IdentityServer
                            IdentityServerConstants.StandardScopes.Address,
                            IdentityServerConstants.StandardScopes.Email,
                            "basketAPI",
+                           "discountAPI",
                            "roles"
                        },
                        //AllowAccessTokensViaBrowser = true
@@ -48,7 +49,8 @@ namespace IdentityServer
         public static IEnumerable<ApiScope> ApiScopes =>
            new ApiScope[]
            {
-               new ApiScope("basketAPI", "Basket API")
+               new ApiScope("basketAPI", "Basket API"),
+               new ApiScope("discountAPI", "Discount API")
            };
 
         public static IEnumerable<IdentityResource> IdentityResources =>
