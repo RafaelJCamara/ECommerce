@@ -35,7 +35,7 @@ namespace OcelotApiGw
                 .AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = Configuration["IdentityServerConfiguration:Uri"];
+                    options.Authority = "https://localhost:5069";
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false
