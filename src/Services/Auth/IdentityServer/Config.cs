@@ -16,6 +16,10 @@ namespace IdentityServer
                    {
                        ClientId = "backendClient",
                        ClientName = "Backend Microservice App",
+                       /*
+                            -> Grant types define the way a client interacts with IdentityServer.
+                            
+                        */
                        AllowedGrantTypes = GrantTypes.ClientCredentials,
                        //proof key protection should be false to not allow further proofs of auth
                        RequirePkce = false,

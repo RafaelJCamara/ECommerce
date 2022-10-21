@@ -83,6 +83,7 @@ services:
       - "GrpcSettings:DiscountUrl=http://discount.grpc"
       - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
+      - "IdentityServerConfiguration:Uri=https://identityserver"
     depends_on:
       - basketdb
       - rabbitmq
@@ -95,6 +96,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - "DatabaseSettings:ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=admin1234;"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
+      - "IdentityServerConfiguration:Uri=https://identityserver"
     depends_on:
       - discountdb
     ports:
@@ -118,6 +120,7 @@ services:
       - "ConnectionStrings:OrderingConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=SwN12345678"
       - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
+      - "IdentityServerConfiguration:Uri=https://identityserver"
     depends_on:
       - orderdb
       - rabbitmq
@@ -129,6 +132,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
+      - "IdentityServerConfiguration:Uri=https://identityserver"
     depends_on:
       - catalog.api
       - basket.api
@@ -145,6 +149,7 @@ services:
       - "ApiSettings:BasketUrl=http://basket.api"
       - "ApiSettings:OrderingUrl=http://ordering.api"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
+      - "IdentityServerConfiguration:Uri=https://identityserver"
     depends_on:
       - catalog.api
       - basket.api
@@ -191,3 +196,10 @@ services:
       - HealthChecksUI__HealthChecks__5__Uri=http://ocelotapigw/hc
     ports:
       - "8007:80"
+
+  identityserver:
+    container_name: identityserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8069:80"
