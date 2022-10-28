@@ -34,16 +34,17 @@ namespace Basket.API.Controllers
         [HttpGet("{username}", Name = "GetBasket")]
         [ProducesResponseType(typeof(ShoppingCart), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ShoppingCart>> GetBasket(string username)
+        public IActionResult GetBasket(string username)
         {
-            var basket = await _basketRepository.GetBasket(username);
-            if (basket == null)
-            {
-                _logger.LogError($"Basket with username {username} not found!");
-                return NotFound($"Basket with username {username} not found!");
-            }
+            return Ok();
+            //var basket = await _basketRepository.GetBasket(username);
+            //if (basket == null)
+            //{
+            //    _logger.LogError($"Basket with username {username} not found!");
+            //    return NotFound($"Basket with username {username} not found!");
+            //}
 
-            return Ok(basket);
+            //return Ok(basket);
         }
 
         [HttpPost(Name = "UpdateCart")]
