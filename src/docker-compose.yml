@@ -75,6 +75,9 @@ services:
     build:
       context: .
       dockerfile: WebApps/WebStatus/Dockerfile
+  
+  zipkin:
+    image: openzipkin/zipkin
 
 volumes:
   mongo_data:
@@ -82,3 +85,4 @@ volumes:
   postgres_data:
   pgadmin_data:
   elasticsearch-data:
+  otel_data:
