@@ -1,4 +1,3 @@
-using System;
 using Basket.API.GrpcServices;
 using Basket.API.Repositories;
 using Discount.Grpc.Protos;
@@ -12,9 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using System;
 
 namespace Basket.API
 {
@@ -80,12 +79,7 @@ namespace Basket.API
                         {
                             o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
                         });
-                        //.AddOtlpExporter(o =>
-                        //{
-                        //    o.Endpoint = new Uri("http://otel-collector:4317");
-                        //});
             });
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
