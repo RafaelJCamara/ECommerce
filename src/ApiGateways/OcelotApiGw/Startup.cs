@@ -29,7 +29,7 @@ namespace OcelotApiGw
                 builder
                         .SetResourceBuilder(ResourceBuilder
                                                             .CreateDefault()
-                                                            .AddService("Basket.API")
+                                                            .AddService("OcelotAPI.GW")
                                             )
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()

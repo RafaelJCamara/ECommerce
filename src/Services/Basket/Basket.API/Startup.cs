@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using StackExchange.Redis;
 using System;
 
 namespace Basket.API
@@ -30,10 +31,10 @@ namespace Basket.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup));
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = Configuration.GetValue<string>("CacheSettings:ConnectionString");
-            });
+            //services.AddStackExchangeRedisCache(options =>
+            //{
+            //    options.Configuration = Configuration.GetValue<string>("CacheSettings:ConnectionString");
+            //});
             services.AddControllers();
             services.AddScoped<IBasketRepository, BasketRepository>();
             services
@@ -65,6 +66,10 @@ namespace Basket.API
                         HealthStatus.Degraded
                 );
 
+            //Redis configuration to adapt to telemetry
+            var connection = ConnectionMultiplexer.Connect(Configuration.GetValue<string>("CacheSettings:ConnectionString"));
+            services.AddSingleton<IConnectionMultiplexer>(connection);
+
             services.AddOpenTelemetryTracing(builder =>
             {
                 builder
@@ -74,7 +79,9 @@ namespace Basket.API
                                             )
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()
+                        .AddGrpcClientInstrumentation(opt => opt.SuppressDownstreamInstrumentation = true)
                         .SetSampler(new AlwaysOnSampler())
+                        .AddRedisInstrumentation(connection, options => options.FlushInterval = TimeSpan.FromSeconds(1))
                         .AddZipkinExporter(o =>
                         {
                             o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");

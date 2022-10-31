@@ -80,7 +80,7 @@ namespace Shopping.Aggregator
                 builder
                         .SetResourceBuilder(ResourceBuilder
                                                             .CreateDefault()
-                                                            .AddService("Basket.API")
+                                                            .AddService("Shopping.Aggregator")
                                             )
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()

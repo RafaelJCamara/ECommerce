@@ -72,7 +72,7 @@ namespace Ordering.API
                 builder
                         .SetResourceBuilder(ResourceBuilder
                                                             .CreateDefault()
-                                                            .AddService("Basket.API")
+                                                            .AddService("Ordering.API")
                                             )
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()

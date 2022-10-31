@@ -44,7 +44,7 @@ namespace Discount.API
                 builder
                         .SetResourceBuilder(ResourceBuilder
                                                             .CreateDefault()
-                                                            .AddService("Basket.API")
+                                                            .AddService("Discount.API")
                                             )
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()

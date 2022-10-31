@@ -21,11 +21,12 @@ namespace Discount.Grpc
                 builder
                         .SetResourceBuilder(ResourceBuilder
                                                             .CreateDefault()
-                                                            .AddService("Basket.API")
+                                                            .AddService("Discount.GRPC")
                                             )
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()
                         .SetSampler(new AlwaysOnSampler())
+                        .AddGrpcClientInstrumentation(opt => opt.SuppressDownstreamInstrumentation = true)
                         .AddZipkinExporter(o =>
                         {
                             o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
