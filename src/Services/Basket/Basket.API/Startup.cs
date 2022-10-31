@@ -81,7 +81,12 @@ namespace Basket.API
                         .AddHttpClientInstrumentation()
                         .AddGrpcClientInstrumentation(opt => opt.SuppressDownstreamInstrumentation = true)
                         .SetSampler(new AlwaysOnSampler())
-                        .AddRedisInstrumentation(connection, options => options.FlushInterval = TimeSpan.FromSeconds(1))
+                        .AddRedisInstrumentation(connection, options =>
+                        {
+                            options.FlushInterval = TimeSpan.FromSeconds(1);
+                            //gather more detailed information about the queries performed
+                            options.SetVerboseDatabaseStatements = true;
+                        })
                         .AddZipkinExporter(o =>
                         {
                             o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
