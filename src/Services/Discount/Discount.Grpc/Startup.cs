@@ -1,8 +1,10 @@
 ﻿using Discount.Grpc.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Npgsql;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using System;
@@ -11,6 +13,13 @@ namespace Discount.Grpc
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IDiscountRepository, DiscountRepository>();
@@ -27,9 +36,10 @@ namespace Discount.Grpc
                         .AddHttpClientInstrumentation()
                         .SetSampler(new AlwaysOnSampler())
                         .AddGrpcClientInstrumentation(opt => opt.SuppressDownstreamInstrumentation = true)
+                        .AddNpgsql()
                         .AddZipkinExporter(o =>
                         {
-                            o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
+                            o.Endpoint = new Uri(Configuration["ZipkinExporterConfig:Uri"]);
                         });
             });
         }

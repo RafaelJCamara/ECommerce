@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Ocelot.Cache.CacheManager;
@@ -18,6 +19,14 @@ namespace OcelotApiGw
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOcelot()
@@ -36,7 +45,7 @@ namespace OcelotApiGw
                         .SetSampler(new AlwaysOnSampler())
                         .AddZipkinExporter(o =>
                         {
-                            o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
+                            o.Endpoint = new Uri(Configuration["ZipkinExporterConfig:Uri"]);
                         });
             });
         }

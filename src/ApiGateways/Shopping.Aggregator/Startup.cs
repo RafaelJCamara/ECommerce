@@ -87,7 +87,7 @@ namespace Shopping.Aggregator
                         .SetSampler(new AlwaysOnSampler())
                         .AddZipkinExporter(o =>
                         {
-                            o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
+                            o.Endpoint = new Uri(Configuration["ZipkinExporterConfig:Uri"]);
                         });
             });
         }
