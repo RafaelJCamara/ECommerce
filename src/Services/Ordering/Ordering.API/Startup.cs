@@ -13,6 +13,9 @@ using Ordering.Application.Models;
 using Ordering.Application.Registers;
 using Ordering.Infrastructure.Persistence;
 using Ordering.Infrastructure.Registers;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using System;
 
 namespace Ordering.API
 {
@@ -63,6 +66,24 @@ namespace Ordering.API
             services
                 .AddHealthChecks()
                 .AddDbContextCheck<OrderContext>();
+
+            services.AddOpenTelemetryTracing(builder =>
+            {
+                builder
+                        .SetResourceBuilder(ResourceBuilder
+                                                            .CreateDefault()
+                                                            .AddService("Ordering.API")
+                                            )
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
+                        .SetSampler(new AlwaysOnSampler())
+                        .AddSource("MassTransit")
+                        .AddZipkinExporter(o =>
+                        {
+                            o.Endpoint = new Uri(Configuration["ZipkinExporterConfig:Uri"]);
+                        });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

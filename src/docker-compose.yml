@@ -75,6 +75,9 @@ services:
     build:
       context: .
       dockerfile: WebApps/WebStatus/Dockerfile
+  
+  zipkin:
+    image: openzipkin/zipkin
 
 volumes:
   mongo_data:
