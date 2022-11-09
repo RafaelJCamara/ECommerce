@@ -89,7 +89,7 @@ namespace Shopping.Aggregator
                 });
             services.AddHttpContextAccessor();
             services.AddTransient<AuthenticationDelegatingHandler>();
-
+            services.AddAuthorization();
         }
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()

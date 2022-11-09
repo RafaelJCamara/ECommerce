@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 
 namespace Discount.Grpc
 {
@@ -39,6 +40,7 @@ namespace Discount.Grpc
                     {
                         ValidateAudience = false
                     };
+                    options.RequireHttpsMetadata = false;
                 });
         }
 
