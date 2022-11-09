@@ -81,7 +81,7 @@ namespace Shopping.Aggregator
                 .AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://localhost:5069";
+                    options.Authority = "https://localhost:5169";
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false

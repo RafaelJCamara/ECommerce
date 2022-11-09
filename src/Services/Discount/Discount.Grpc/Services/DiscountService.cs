@@ -4,9 +4,11 @@ using Discount.Grpc.Entities;
 using Discount.Grpc.Protos;
 using Discount.Grpc.Repositories;
 using Grpc.Core;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Discount.Grpc
 {
+    [Authorize]
     public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
     {
         private readonly IMapper _mapper;

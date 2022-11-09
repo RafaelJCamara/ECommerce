@@ -1,4 +1,5 @@
 using Basket.API.GrpcServices;
+using Basket.API.HttpHandlers;
 using Basket.API.Repositories;
 using Discount.Grpc.Protos;
 using HealthChecks.UI.Client;
@@ -35,6 +36,7 @@ namespace Basket.API
             });
             services.AddControllers();
             services.AddScoped<IBasketRepository, BasketRepository>();
+            services.AddHttpContextAccessor();
             services
                 .AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>
                 (
@@ -72,7 +74,7 @@ namespace Basket.API
                 .AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://localhost:5069";
+                    options.Authority = "https://localhost:5169";
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false
