@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -54,6 +55,17 @@ namespace Discount.API
                             o.Endpoint = new Uri(Configuration["ZipkinExporterConfig:Uri"]);
                         });
             });
+            services
+                .AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = Configuration.GetValue<string>("IdentityServerConfiguration:Uri");
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                });
+            services.AddAuthorization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,7 +78,12 @@ namespace Discount.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Discount.API v1"));
             }
 
+            app.UseHttpsRedirection();
+
             app.UseRouting();
+
+            //Without this Authentication middleware, we will still get 401 status codes
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

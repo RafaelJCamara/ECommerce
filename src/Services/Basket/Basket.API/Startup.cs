@@ -1,4 +1,5 @@
 using Basket.API.GrpcServices;
+using Basket.API.HttpHandlers;
 using Basket.API.Repositories;
 using Discount.Grpc.Protos;
 using HealthChecks.UI.Client;
@@ -10,11 +11,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using StackExchange.Redis;
 using System;
+using System;
+using System.Net;
 
 namespace Basket.API
 {
@@ -37,6 +41,7 @@ namespace Basket.API
             //});
             services.AddControllers();
             services.AddScoped<IBasketRepository, BasketRepository>();
+            services.AddHttpContextAccessor();
             services
                 .AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>
                 (
@@ -65,6 +70,23 @@ namespace Basket.API
                         "Basket Redis Health Check",
                         HealthStatus.Degraded
                 );
+
+            /*
+                Configure Auth
+             */
+
+            services
+                .AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = Configuration.GetValue<string>("IdentityServerConfiguration:Uri");
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                    options.RequireHttpsMetadata = false;
+                });
+            services.AddAuthorization();
 
             //Redis configuration to adapt to telemetry
             var connection = ConnectionMultiplexer.Connect(Configuration.GetValue<string>("CacheSettings:ConnectionString"));
@@ -105,7 +127,11 @@ namespace Basket.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Basket.API v1"));
             }
 
+            app.UseHttpsRedirection();
+
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

@@ -10,10 +10,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Polly;
 using Polly.Extensions.Http;
 using Serilog;
+using Shopping.Aggregator.HttpHandlers;
 using Shopping.Aggregator.Services;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -49,6 +51,7 @@ namespace Shopping.Aggregator
             services.AddHttpClient<IBasketService, BasketService>(c =>
                     c.BaseAddress = new Uri(Configuration["ApiSettings:BasketUrl"]))
                 .AddHttpMessageHandler<LoggingDelegatingHandler>()
+                .AddHttpMessageHandler<AuthenticationDelegatingHandler>()
                 // specifies the retry policy
                 .AddPolicyHandler(GetRetryPolicy())
                 // specifies the circuit break policy
@@ -57,6 +60,7 @@ namespace Shopping.Aggregator
             services.AddHttpClient<IOrderService, OrderService>(c =>
                     c.BaseAddress = new Uri(Configuration["ApiSettings:OrderingUrl"]))
                 .AddHttpMessageHandler<LoggingDelegatingHandler>()
+                .AddHttpMessageHandler<AuthenticationDelegatingHandler>()
                 // specifies the retry policy
                 .AddPolicyHandler(GetRetryPolicy())
                 // specifies the circuit break policy
@@ -75,6 +79,20 @@ namespace Shopping.Aggregator
                 .AddUrlGroup(new Uri($"{Configuration["ApiSettings:CatalogUrl"]}/swagger/index.html"), "Catalog.API", HealthStatus.Degraded)
                 .AddUrlGroup(new Uri($"{Configuration["ApiSettings:BasketUrl"]}/swagger/index.html"), "Basket.API", HealthStatus.Degraded)
                 .AddUrlGroup(new Uri($"{Configuration["ApiSettings:OrderingUrl"]}/swagger/index.html"), "Ordering.API", HealthStatus.Degraded);
+
+            services
+                .AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = Configuration.GetValue<string>("IdentityServerConfiguration:Uri");
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                });
+            services.AddHttpContextAccessor();
+            services.AddTransient<AuthenticationDelegatingHandler>();
+            services.AddAuthorization();
             services.AddOpenTelemetryTracing(builder =>
             {
                 builder
@@ -125,7 +143,11 @@ namespace Shopping.Aggregator
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shopping.Aggregator v1"));
             }
 
+            app.UseHttpsRedirection();
+
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
