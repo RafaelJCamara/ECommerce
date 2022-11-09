@@ -3,10 +3,7 @@ using Basket.API.Entities;
 
 namespace Basket.API.Repositories
 {
-    public interface IBasketRepository
+    public interface IBasketRepository : IRepository<ShoppingCart, string>
     {
-        Task<ShoppingCart> GetBasket(string username);
-        Task<ShoppingCart> UpdateBasket(ShoppingCart basket);
-        Task DeleteBasket(string username);
     }
 }

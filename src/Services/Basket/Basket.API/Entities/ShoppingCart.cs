@@ -2,7 +2,7 @@
 
 namespace Basket.API.Entities
 {
-    public class ShoppingCart
+    public class ShoppingCart : EntityBase
     {
         public ShoppingCart()
         {

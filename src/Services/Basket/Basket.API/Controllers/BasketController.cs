@@ -38,7 +38,7 @@ namespace Basket.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ShoppingCart>> GetBasket(string username)
         {
-            var basket = await _basketRepository.GetBasket(username);
+            var basket = await _basketRepository.GetById(username);
             if (basket == null)
             {
                 _logger.LogError($"Basket with username {username} not found!");
@@ -58,14 +58,14 @@ namespace Basket.API.Controllers
                 item.Price -= coupon.Amount;
             }
 
-            return Ok(await _basketRepository.UpdateBasket(basket));
+            return Ok(await _basketRepository.Update(basket));
         }
 
         [HttpDelete("{username}", Name = "DeleteBasket")]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteBasket(string username)
         {
-            await _basketRepository.DeleteBasket(username);
+            await _basketRepository.Delete(username);
             return NoContent();
         }
 
@@ -77,7 +77,7 @@ namespace Basket.API.Controllers
         {
             var mappedBasketToEvent = _mapper.Map<BasketCheckoutEvent>(basketCheckout);
             await _publishEndpoint.Publish(mappedBasketToEvent);
-            await _basketRepository.DeleteBasket(basketCheckout.UserName);
+            await _basketRepository.Delete(basketCheckout.UserName);
             return Accepted();
         }
     }
