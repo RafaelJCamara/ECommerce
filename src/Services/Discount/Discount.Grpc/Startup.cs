@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Npgsql;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using System;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
@@ -12,7 +16,6 @@ namespace Discount.Grpc
 {
     public class Startup
     {
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -42,6 +45,23 @@ namespace Discount.Grpc
                     };
                     options.RequireHttpsMetadata = false;
                 });
+            services.AddOpenTelemetryTracing(builder =>
+            {
+                builder
+                        .SetResourceBuilder(ResourceBuilder
+                                                            .CreateDefault()
+                                                            .AddService("Discount.GRPC")
+                                            )
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .SetSampler(new AlwaysOnSampler())
+                        .AddGrpcClientInstrumentation(opt => opt.SuppressDownstreamInstrumentation = true)
+                        .AddNpgsql()
+                        .AddZipkinExporter(o =>
+                        {
+                            o.Endpoint = new Uri(Configuration["ZipkinExporterConfig:Uri"]);
+                        });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

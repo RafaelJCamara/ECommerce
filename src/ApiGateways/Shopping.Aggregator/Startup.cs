@@ -17,6 +17,9 @@ using Polly.Extensions.Http;
 using Serilog;
 using Shopping.Aggregator.HttpHandlers;
 using Shopping.Aggregator.Services;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using System;
 
 namespace Shopping.Aggregator
 {
@@ -90,6 +93,21 @@ namespace Shopping.Aggregator
             services.AddHttpContextAccessor();
             services.AddTransient<AuthenticationDelegatingHandler>();
             services.AddAuthorization();
+            services.AddOpenTelemetryTracing(builder =>
+            {
+                builder
+                        .SetResourceBuilder(ResourceBuilder
+                                                            .CreateDefault()
+                                                            .AddService("Shopping.Aggregator")
+                                            )
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .SetSampler(new AlwaysOnSampler())
+                        .AddZipkinExporter(o =>
+                        {
+                            o.Endpoint = new Uri(Configuration["ZipkinExporterConfig:Uri"]);
+                        });
+            });
         }
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()

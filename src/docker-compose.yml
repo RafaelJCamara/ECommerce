@@ -82,6 +82,10 @@ services:
       context: .
       dockerfile: Services/Auth/IdentityServer/Dockerfile
 
+  
+  zipkin:
+    image: openzipkin/zipkin
+
 volumes:
   mongo_data:
   portainer_data:

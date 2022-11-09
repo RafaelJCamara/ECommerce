@@ -10,6 +10,9 @@ using Microsoft.IdentityModel.Tokens;
 using Ocelot.Cache.CacheManager;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using System;
 
 namespace OcelotApiGw
 {
@@ -31,6 +34,21 @@ namespace OcelotApiGw
                 .AddCacheManager(settings => settings.WithDictionaryHandle());
             services
                 .AddHealthChecks();
+            services.AddOpenTelemetryTracing(builder =>
+            {
+                builder
+                        .SetResourceBuilder(ResourceBuilder
+                                                            .CreateDefault()
+                                                            .AddService("OcelotAPI.GW")
+                                            )
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .SetSampler(new AlwaysOnSampler())
+                        .AddZipkinExporter(o =>
+                        {
+                            o.Endpoint = new Uri(Configuration["ZipkinExporterConfig:Uri"]);
+                        });
+            });
             services
                 .AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>

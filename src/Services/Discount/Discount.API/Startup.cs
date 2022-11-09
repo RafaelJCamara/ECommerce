@@ -9,6 +9,9 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using System;
 
 namespace Discount.API
 {
@@ -37,6 +40,21 @@ namespace Discount.API
                         name: "Discount PostgreSQL Health Check",
                         failureStatus: HealthStatus.Degraded
                 );
+            services.AddOpenTelemetryTracing(builder =>
+            {
+                builder
+                        .SetResourceBuilder(ResourceBuilder
+                                                            .CreateDefault()
+                                                            .AddService("Discount.API")
+                                            )
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .SetSampler(new AlwaysOnSampler())
+                        .AddZipkinExporter(o =>
+                        {
+                            o.Endpoint = new Uri(Configuration["ZipkinExporterConfig:Uri"]);
+                        });
+            });
             services
                 .AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>

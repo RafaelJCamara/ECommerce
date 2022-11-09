@@ -70,6 +70,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - "DatabaseSettings:ConnectionString=mongodb://catalogdb:27017"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
+      - "ZipkinExporterConfig:Uri=http://zipkin:9411/api/v2/spans"
     depends_on:
       - catalogdb
     ports:
@@ -84,6 +85,7 @@ services:
       - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
       - "IdentityServerConfiguration:Uri=https://identityserver:8069"
+      - "ZipkinExporterConfig:Uri=http://zipkin:9411/api/v2/spans"
     depends_on:
       - basketdb
       - rabbitmq
@@ -98,6 +100,7 @@ services:
       - "DatabaseSettings:ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=admin1234;"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
       - "IdentityServerConfiguration:Uri=https://identityserver:8069"
+      - "ZipkinExporterConfig:Uri=http://zipkin:9411/api/v2/spans"
     depends_on:
       - discountdb
       - identityserver
@@ -111,6 +114,7 @@ services:
       - "DatabaseSettings:ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=admin1234;"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
       - "IdentityServerConfiguration:Uri=https://identityserver:8069"
+      - "ZipkinExporterConfig:Uri=http://zipkin:9411/api/v2/spans"
     depends_on:
       - discountdb
       - identityserver
@@ -125,6 +129,7 @@ services:
       - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
       - "IdentityServerConfiguration:Uri=https://identityserver:8069"
+      - "ZipkinExporterConfig:Uri=http://zipkin:9411/api/v2/spans"
     depends_on:
       - orderdb
       - rabbitmq
@@ -138,6 +143,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
       - "IdentityServerConfiguration:Uri=https://identityserver:8069"
+      - "ZipkinExporterConfig:Uri=http://zipkin:9411/api/v2/spans"
     depends_on:
       - catalog.api
       - basket.api
@@ -155,6 +161,7 @@ services:
       - "ApiSettings:BasketUrl=http://basket.api"
       - "ApiSettings:OrderingUrl=http://ordering.api"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
+      - "ZipkinExporterConfig:Uri=http://zipkin:9411/api/v2/spans"
       - "IdentityServerConfiguration:Uri=https://identityserver:8069"
     depends_on:
       - catalog.api
@@ -210,3 +217,9 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "8069:80"
+      - "8007:80"
+  
+  zipkin:
+    container_name: zipkin
+    ports:
+      - "9411:9411"

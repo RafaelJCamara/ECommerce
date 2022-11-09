@@ -13,6 +13,10 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using StackExchange.Redis;
+using System;
 using System;
 using System.Net;
 
@@ -31,10 +35,10 @@ namespace Basket.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup));
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = Configuration.GetValue<string>("CacheSettings:ConnectionString");
-            });
+            //services.AddStackExchangeRedisCache(options =>
+            //{
+            //    options.Configuration = Configuration.GetValue<string>("CacheSettings:ConnectionString");
+            //});
             services.AddControllers();
             services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddHttpContextAccessor();
@@ -83,6 +87,34 @@ namespace Basket.API
                     options.RequireHttpsMetadata = false;
                 });
             services.AddAuthorization();
+
+            //Redis configuration to adapt to telemetry
+            var connection = ConnectionMultiplexer.Connect(Configuration.GetValue<string>("CacheSettings:ConnectionString"));
+            services.AddSingleton<IConnectionMultiplexer>(connection);
+
+            services.AddOpenTelemetryTracing(builder =>
+            {
+                builder
+                        .SetResourceBuilder(ResourceBuilder
+                                                            .CreateDefault()
+                                                            .AddService("Basket.API")
+                                            )
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .AddGrpcClientInstrumentation(opt => opt.SuppressDownstreamInstrumentation = true)
+                        .SetSampler(new AlwaysOnSampler())
+                        .AddSource("MassTransit")
+                        .AddRedisInstrumentation(connection, options =>
+                        {
+                            options.FlushInterval = TimeSpan.FromSeconds(1);
+                            //gather more detailed information about the queries performed
+                            options.SetVerboseDatabaseStatements = true;
+                        })
+                        .AddZipkinExporter(o =>
+                        {
+                            o.Endpoint = new Uri(Configuration["ZipkinExporterConfig:Uri"]);
+                        });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
