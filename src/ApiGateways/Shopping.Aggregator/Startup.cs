@@ -81,7 +81,7 @@ namespace Shopping.Aggregator
                 .AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://localhost:5169";
+                    options.Authority = Configuration.GetValue<string>("IdentityServerConfiguration:Uri");
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false
