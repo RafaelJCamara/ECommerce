@@ -17,7 +17,7 @@ namespace Basket.API.Repositories
             _connectionMultiplexer = connectionMultiplexer;
         }
 
-        public async Task<ShoppingCart> GetBasket(string username)
+        public async Task<ShoppingCart> GetById(string username)
         {
             var redis = _connectionMultiplexer.GetDatabase();
             var basket = await redis.StringGetAsync(username);
@@ -25,14 +25,14 @@ namespace Basket.API.Repositories
             return JsonConvert.DeserializeObject<ShoppingCart>(basket);
         }
 
-        public async Task<ShoppingCart> UpdateBasket(ShoppingCart basket)
+        public async Task<ShoppingCart> Update(ShoppingCart basket)
         {
             var redis = _connectionMultiplexer.GetDatabase();
             await redis.StringSetAsync(basket.UserName, JsonConvert.SerializeObject(basket));
-            return await GetBasket(basket.UserName);
+            return await GetById(basket.UserName);
         }
 
-        public async Task DeleteBasket(string username)
+        public async Task Delete(string username)
         {
             var redis = _connectionMultiplexer.GetDatabase();
             await redis.KeyDeleteAsync(username);
