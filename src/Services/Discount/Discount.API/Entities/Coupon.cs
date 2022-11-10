@@ -1,6 +1,6 @@
 ﻿namespace Discount.API.Entities
 {
-    public class Coupon
+    public class Coupon : EntityBase
     {
         public int Id { get; set; }
         public string ProductName { get; set; }

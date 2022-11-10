@@ -15,7 +15,7 @@ namespace Discount.API.Repositories
             _configuration = configuration;
         }
 
-        public async Task<Coupon> GetDiscount(string productName)
+        public async Task<Coupon> Get(string productName)
         {
             using var connection = new NpgsqlConnection
                 (_configuration.GetValue<string>("DatabaseSettings:ConnectionString"));
@@ -30,7 +30,7 @@ namespace Discount.API.Repositories
             return coupon;
         }
 
-        public async Task<bool> CreateDiscount(Coupon coupon)
+        public async Task<bool> Create(Coupon coupon)
         {
             using var connection = new NpgsqlConnection
                 (_configuration.GetValue<string>("DatabaseSettings:ConnectionString"));
@@ -46,7 +46,7 @@ namespace Discount.API.Repositories
             return true;
         }
 
-        public async Task<bool> UpdateDiscount(Coupon coupon)
+        public async Task<bool> Update(Coupon coupon)
         {
             using var connection =
                 new NpgsqlConnection(_configuration.GetValue<string>("DatabaseSettings:ConnectionString"));
@@ -61,7 +61,7 @@ namespace Discount.API.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteDiscount(string productName)
+        public async Task<bool> Delete(string productName)
         {
             using var connection =
                 new NpgsqlConnection(_configuration.GetValue<string>("DatabaseSettings:ConnectionString"));
