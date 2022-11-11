@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\src"
+    "\\src",
+    "\\src\\Services",
+    "\\src\\Services\\Catalog\\Catalog.API",
+    "\\src\\Services\\Catalog\\Catalog.API\\Controllers"
   ],
   "SelectedNode": "\\src\\aspnetrun-microservices.sln",
   "PreviewInSolutionExplorer": false

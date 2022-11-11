@@ -8,7 +8,7 @@ namespace Catalog.API.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly ICatalogContext _catalogContext;
+        public readonly ICatalogContext _catalogContext;
 
         public ProductRepository(ICatalogContext catalogContext)
         {
@@ -31,36 +31,44 @@ namespace Catalog.API.Repositories
 
         public async Task<Product> GetProduct(string id)
         {
-            return await _catalogContext
-                .Products
-                .Find(p => p.Id == id)
-                .FirstOrDefaultAsync();
+            var filter = Builders<Product>.Filter.Eq(p => p.Id, id);
+            return await GetProductThatMatchCriteria(filter);
         }
 
         public async Task<IEnumerable<Product>> GetProductByCategory(string category)
         {
             var filter = Builders<Product>.Filter.Eq(p => p.Category, category);
-            return await _catalogContext
-                .Products
-                .Find(filter)
-                .ToListAsync();
+            return await GetProductsThatMatchCriteria(filter);
         }
 
         public async Task<IEnumerable<Product>> GetProductByName(string name)
         {
             var filter = Builders<Product>.Filter.Eq(p => p.Name, name);
-            return await _catalogContext
-                .Products
-                .Find(filter)
-                .ToListAsync();
+            return await GetProductsThatMatchCriteria(filter);
         }
 
         public async Task<IEnumerable<Product>> GetProducts()
         {
+            var filter = Builders<Product>.Filter.Exists("Id", true);
+            return await GetProductsThatMatchCriteria(filter);
+        }
+
+        //for testing purposes (it contains an extension method): workaround
+        protected async virtual Task<Product> GetProductThatMatchCriteria(FilterDefinition<Product> filter)
+        {
             return await _catalogContext
-                .Products
-                .Find(p => true)
-                .ToListAsync();
+                                      .Products
+                                      .Find(filter)
+                                      .FirstOrDefaultAsync();
+        }
+
+        //for testing purposes (it contains an extension method): workaround
+        protected async virtual Task<IEnumerable<Product>> GetProductsThatMatchCriteria(FilterDefinition<Product> filter)
+        {
+            return await _catalogContext
+                                      .Products
+                                      .Find(filter)
+                                      .ToListAsync();
         }
 
         public async Task<bool> UpdateProduct(Product product)
