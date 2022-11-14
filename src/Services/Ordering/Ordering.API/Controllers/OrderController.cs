@@ -14,7 +14,7 @@ namespace Ordering.API.Controllers
     [Route("api/v1/[controller]")]
     [Authorize]
     public class OrderController : ControllerBase
-    {
+    { 
         private readonly IMediator _mediator;
 
         public OrderController(IMediator mediator)
